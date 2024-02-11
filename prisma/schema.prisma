@@ -9,3 +9,55 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// Define the User schema
+model User {
+  id        String      @id @default(uuid())
+  name      String
+  email     String      @unique
+  phone     String?
+  licenses  License[]
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  equipment Equipment[]
+
+  @@map("users")
+}
+
+// Define the License schema
+model License {
+  id         String   @id @default(uuid())
+  key        String   @unique
+  software   Software @relation(fields: [softwareId], references: [id])
+  softwareId String
+  user       User?    @relation(fields: [userId], references: [id])
+  userId     String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("licenses")
+}
+
+// Define the Software schema
+model Software {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  licenses    License[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("software")
+}
+
+model Equipment {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  user        User?    @relation(fields: [userId], references: [id])
+  userId      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("equipment")
+}
