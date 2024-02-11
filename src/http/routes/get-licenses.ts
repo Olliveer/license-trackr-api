@@ -1,13 +1,10 @@
 import { FastifyInstance } from "fastify";
+import { prisma } from "../../lib/prisma";
 
+export async function getLicenses(app: FastifyInstance) {
+  app.get("/licenses", async (request, reply) => {
+    const licenses = await prisma.license.findMany();
 
-
-export async function getLicenses(app: FastifyInstance){
-  app.get('/licenses', async (request, reply) =>{
-    
-
-
-      
-
-  })
+    reply.send(licenses);
+  });
 }
